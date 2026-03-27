@@ -8,9 +8,9 @@ int main() {
 	float altura;
 	
 	printf("Digite seu nome: \n");
-	gets(nome);
+	//gets(nome);
 	//scanf("%s", nome);
-	//fgets(nome,50,stdin);
+	fgets(nome,50,stdin);
 	fflush(stdin);
 	printf("Digite seu sexo: \n");
 	scanf("%c", &sexo);
