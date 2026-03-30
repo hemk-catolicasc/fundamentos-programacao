@@ -9,9 +9,7 @@
     <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d141854e-ef55-44f9-8558-0f73b47ec86f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/ex01.c" beforeDir="false" afterPath="$PROJECT_DIR$/ex01.c" afterDir="false" />
-    </list>
+    <list default="true" id="d141854e-ef55-44f9-8558-0f73b47ec86f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -23,18 +21,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "hemkdev"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;hemkdev&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/hemk-catolicasc/fundamentos-programacao.git",
-    "accountId": "8bb19393-3aa1-4033-a14c-e1c9748120f5"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/hemk-catolicasc/fundamentos-programacao.git&quot;,
+    &quot;accountId&quot;: &quot;8bb19393-3aa1-4033-a14c-e1c9748120f5&quot;
   }
-}]]></component>
+}</component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="IdT4dxYc" />
   </component>
@@ -44,9 +42,9 @@
     <option name="minorVersion" value="3.3" />
     <option name="productBranch" value="Classic" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="3BSNjfp2Z489y3Ho2sj9yqxKsKx" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -54,6 +52,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "C/C++ File.ex01.c.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.RadMigrateCodeStyle": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -64,6 +63,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/ZETEC/Documents/Católica SC/fundamentos-programacao/exercicios-16-03",
     "org.rust.first.attach.projects": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -119,6 +119,7 @@
       <option name="presentableId" value="Default" />
       <updated>1774478659027</updated>
       <workItem from="1774478664655" duration="51000" />
+      <workItem from="1774895022870" duration="53000" />
     </task>
     <servers />
   </component>
