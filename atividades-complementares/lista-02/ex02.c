@@ -7,6 +7,7 @@ int main () {
 
     printf("Digite um numero: ");
     scanf("%d", &numero);
+    fflush(stdin);
 
     if (numero > 0) {
         printf("numero positivo");
