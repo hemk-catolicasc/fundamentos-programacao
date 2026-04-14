@@ -9,13 +9,8 @@ int main () {
     n2 = 0;
     escolha = 0;
 
-    printf("Digite um numero: ");
-    scanf("%d", &n1);
-    fflush(stdin);
-    printf("Digite outro numero: ");
-    scanf("%d", &n2);
-    fflush(stdin);
-
+    system("cls");
+    system("color 1f");
 
     printf("---CALCULADORA--- \n");
     printf("[1] - Adicao \n");
@@ -23,23 +18,33 @@ int main () {
     printf("[3] - Multiplicacao \n");
     printf("[4] - Divisao \n");
     scanf("%d", &escolha);
+    fflush(stdin);
 
-    switch (escolha) {
-        case 1:
-            printf("%d", n1 + n2);
-            break;
-        case 2:
-            printf("%d", n1 - n2);
-            break;
-        case 3:
-            printf("%d", n1 * n2);
-            break;
-        case 4:
-            printf("%d", n1 / n2);
-            break;
-        default:
-            printf("Numero invalido");
-            break;
+    printf("Digite um numero: ");
+    scanf("%d", &n1);
+    fflush(stdin);
+    printf("Digite outro numero: ");
+    scanf("%d", &n2);
+    fflush(stdin);
+
+    if (escolha>=1 && escolha<=4) {
+      switch (escolha) {
+          case 1:
+              printf("%d", n1 + n2);
+              break;
+          case 2:
+              printf("%d", n1 - n2);
+              break;
+          case 3:
+              printf("%d", n1 * n2);
+              break;
+          case 4:
+              printf("%d", n1 / n2);
+              break;
+          default:
+              printf("Numero invalido");
+              break;
+      }
     }
 
     return 0;
