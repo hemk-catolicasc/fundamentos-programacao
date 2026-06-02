@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entendendo a Agenda de Contatos em C</title>
+<style>
+  :root {
+    --azul: #2563eb;
+    --azul-claro: #eff6ff;
+    --cinza: #475569;
+    --fundo: #f8fafc;
+    --borda: #e2e8f0;
+    --verde: #16a34a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.7;
+    color: #1e293b;
+    background: var(--fundo);
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  header h1 { margin: 0 0 8px; font-size: 2em; }
+  header p { margin: 0; opacity: 0.9; font-size: 1.05em; }
+  main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 24px 20px 80px;
+  }
+  .intro {
+    background: var(--azul-claro);
+    border-left: 4px solid var(--azul);
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin: 24px 0;
+  }
+  .bloco {
+    background: white;
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin: 24px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .bloco h2 {
+    margin-top: 0;
+    color: var(--azul);
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .numero {
+    background: var(--azul);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85em;
+    flex-shrink: 0;
+  }
+  pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 16px 18px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.9em;
+    font-family: "SF Mono", Consolas, "Courier New", monospace;
+    line-height: 1.5;
+  }
+  pre .c { color: #64748b; font-style: italic; }   /* comentário */
+  pre .k { color: #f472b6; }                        /* palavra-chave */
+  pre .s { color: #86efac; }                        /* texto */
+  pre .f { color: #93c5fd; }                        /* função */
+  .analogia {
+    background: #fefce8;
+    border-left: 4px solid #eab308;
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin: 16px 0;
+    font-size: 0.97em;
+  }
+  .analogia strong { color: #a16207; }
+  .destaque {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 16px 20px;
+    border-radius: 10px;
+    margin: 24px 0;
+  }
+  code {
+    background: #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.88em;
+    color: #be185d;
+  }
+  footer {
+    text-align: center;
+    color: var(--cinza);
+    font-size: 0.9em;
+    padding: 30px 20px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📒 Como funciona a Agenda de Contatos</h1>
+  <p>Um programa em linguagem C, explicado do jeito mais simples possível</p>
+</header>
+
+<main>
+
+  <div class="intro">
+    <p style="margin:0">
+      Imagine um <strong>caderninho de telefones</strong>. Esse programa faz a
+      mesma coisa, só que no computador: você pode <strong>anotar</strong> um
+      contato, <strong>ver a lista</strong> toda, <strong>procurar</strong> alguém
+      pelo nome e <strong>apagar</strong> quem não quer mais. Vamos ver cada
+      pedaço do código sem pressa. 🙂
+    </p>
+  </div>
+
+  <!-- 1 -->
+  <div class="bloco">
+    <h2><span class="numero">1</span> As "caixas de ferramentas"</h2>
+    <pre><span class="k">#include</span> &lt;stdio.h&gt;
+<span class="k">#include</span> &lt;stdlib.h&gt;
+<span class="k">#include</span> &lt;string.h&gt;</pre>
+    <p>
+      Antes de começar, o programa avisa que vai usar algumas ferramentas prontas
+      da linguagem C. Cada <code>#include</code> é como pegar uma caixa de
+      ferramentas da prateleira:
+    </p>
+    <ul>
+      <li><code>stdio.h</code> → ferramentas para <strong>escrever na tela e ler o que você digita</strong>.</li>
+      <li><code>stdlib.h</code> → ferramentas gerais do sistema.</li>
+      <li><code>string.h</code> → ferramentas para <strong>trabalhar com texto</strong> (comparar nomes, por exemplo).</li>
+    </ul>
+  </div>
+
+  <!-- 2 -->
+  <div class="bloco">
+    <h2><span class="numero">2</span> O molde de um contato</h2>
+    <pre><span class="k">#define</span> MAX 100
+
+<span class="k">struct</span> Contato {
+    <span class="k">char</span> nome[50];
+    <span class="k">char</span> telefone[20];
+};</pre>
+    <p>
+      Aqui o programa cria um <strong>molde</strong> do que é um contato: todo
+      contato tem um <strong>nome</strong> e um <strong>telefone</strong>. Os
+      números (50 e 20) dizem quantas letras cabem em cada um.
+    </p>
+    <p>
+      O <code>MAX 100</code> define que a agenda guarda no máximo
+      <strong>100 contatos</strong>.
+    </p>
+    <div class="analogia">
+      <strong>Analogia:</strong> a <code>struct</code> é como uma
+      <strong>ficha em branco</strong> de cadastro, com dois campos para
+      preencher: "Nome" e "Telefone".
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="bloco">
+    <h2><span class="numero">3</span> Onde os contatos ficam guardados</h2>
+    <pre><span class="k">struct</span> Contato agenda[MAX];
+<span class="k">int</span> total = 0;</pre>
+    <p>
+      <code>agenda</code> é uma <strong>estante com 100 gavetas</strong>, e cada
+      gaveta guarda uma ficha de contato.
+    </p>
+    <p>
+      <code>total</code> é um <strong>contador</strong>: ele anota quantos
+      contatos já foram cadastrados. Começa em <strong>0</strong> porque, no
+      início, a agenda está vazia.
+    </p>
+  </div>
+
+  <!-- 4 -->
+  <div class="bloco">
+    <h2><span class="numero">4</span> Incluir um contato novo</h2>
+    <pre><span class="k">void</span> <span class="f">incluir</span>() {
+    <span class="k">if</span> (total &gt;= MAX) {
+        <span class="f">printf</span>(<span class="s">"Agenda cheia!\n"</span>);
+        <span class="k">return</span>;
+    }
+    <span class="f">printf</span>(<span class="s">"Nome: "</span>);
+    <span class="f">scanf</span>(<span class="s">" %[^\n]"</span>, agenda[total].nome);
+    <span class="f">printf</span>(<span class="s">"Telefone: "</span>);
+    <span class="f">scanf</span>(<span class="s">" %[^\n]"</span>, agenda[total].telefone);
+    total++;
+    <span class="f">printf</span>(<span class="s">"Contato incluido!\n"</span>);
+}</pre>
+    <p>Passo a passo do que acontece quando você escolhe "incluir":</p>
+    <ul>
+      <li>Primeiro ele <strong>checa se a agenda está cheia</strong>. Se já tem 100, avisa e para.</li>
+      <li>Depois <strong>pergunta o nome</strong> e <strong>o telefone</strong>, e guarda na próxima gaveta livre.</li>
+      <li><code>total++</code> quer dizer "<strong>aumenta o contador em 1</strong>", porque agora tem um contato a mais.</li>
+    </ul>
+    <div class="analogia">
+      <strong>Sobre o <code>scanf</code>:</strong> ele é o que "ouve" o que você
+      digita no teclado e guarda na ficha. Aquele <code>%[^\n]</code> é só um
+      truque para aceitar <strong>nomes com espaço</strong> (tipo "Maria Silva").
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="bloco">
+    <h2><span class="numero">5</span> Listar todos os contatos</h2>
+    <pre><span class="k">void</span> <span class="f">listar</span>() {
+    <span class="k">int</span> i;
+    <span class="k">if</span> (total == 0) {
+        <span class="f">printf</span>(<span class="s">"Nenhum contato cadastrado.\n"</span>);
+        <span class="k">return</span>;
+    }
+    <span class="k">for</span> (i = 0; i &lt; total; i++) {
+        <span class="f">printf</span>(<span class="s">"%d - %s | %s\n"</span>, i + 1, agenda[i].nome, agenda[i].telefone);
+    }
+}</pre>
+    <p>
+      Se não tiver ninguém cadastrado, ele avisa. Se tiver, o
+      <code>for</code> funciona como "<strong>passar por todas as gavetas, uma
+      por uma</strong>" e mostrar o nome e o telefone de cada contato na tela.
+    </p>
+    <div class="analogia">
+      <strong>Analogia:</strong> é como folhear o caderninho do começo ao fim,
+      lendo cada página em voz alta.
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="bloco">
+    <h2><span class="numero">6</span> Consultar um contato pelo nome</h2>
+    <pre><span class="k">void</span> <span class="f">consultar</span>() {
+    <span class="k">char</span> nome[50];
+    <span class="k">int</span> i, achou = 0;
+    <span class="f">printf</span>(<span class="s">"Digite o nome: "</span>);
+    <span class="f">scanf</span>(<span class="s">" %[^\n]"</span>, nome);
+    <span class="k">for</span> (i = 0; i &lt; total; i++) {
+        <span class="k">if</span> (<span class="f">strcmp</span>(agenda[i].nome, nome) == 0) {
+            <span class="f">printf</span>(<span class="s">"Nome: %s\nTelefone: %s\n"</span>, agenda[i].nome, agenda[i].telefone);
+            achou = 1;
+        }
+    }
+    <span class="k">if</span> (achou == 0) {
+        <span class="f">printf</span>(<span class="s">"Contato nao encontrado.\n"</span>);
+    }
+}</pre>
+    <p>
+      Você digita o nome que procura. O programa <strong>passa por todos os
+      contatos</strong> e, em cada um, usa o <code>strcmp</code> para
+      <strong>comparar se o nome bate</strong> com o que você digitou.
+    </p>
+    <ul>
+      <li>Se achar, mostra o contato e marca <code>achou = 1</code> (uma forma de dizer "achei!").</li>
+      <li>No fim, se <code>achou</code> continuar em 0, avisa que não encontrou.</li>
+    </ul>
+    <div class="analogia">
+      <strong>Analogia:</strong> é como perguntar "alguém aqui se chama Maria?" e
+      ir conferindo ficha por ficha.
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="bloco">
+    <h2><span class="numero">7</span> Excluir um contato</h2>
+    <pre><span class="k">void</span> <span class="f">excluir</span>() {
+    <span class="k">char</span> nome[50];
+    <span class="k">int</span> i, pos = -1;
+    <span class="f">printf</span>(<span class="s">"Digite o nome: "</span>);
+    <span class="f">scanf</span>(<span class="s">" %[^\n]"</span>, nome);
+    <span class="k">for</span> (i = 0; i &lt; total; i++) {
+        <span class="k">if</span> (<span class="f">strcmp</span>(agenda[i].nome, nome) == 0) {
+            pos = i;
+        }
+    }
+    <span class="k">if</span> (pos == -1) {
+        <span class="f">printf</span>(<span class="s">"Contato nao encontrado.\n"</span>);
+        <span class="k">return</span>;
+    }
+    <span class="c">/* puxa os contatos seguintes uma posicao para tras */</span>
+    <span class="k">for</span> (i = pos; i &lt; total - 1; i++) {
+        agenda[i] = agenda[i + 1];
+    }
+    total--;
+    <span class="f">printf</span>(<span class="s">"Contato excluido!\n"</span>);
+}</pre>
+    <p>
+      Primeiro ele <strong>procura</strong> o contato (igual à consulta) e anota
+      em qual gaveta ele está (<code>pos</code>). Se não achar, avisa e para.
+    </p>
+    <p>
+      A parte importante é o comentário: <strong>"puxa os contatos seguintes uma
+      posição para trás"</strong>. Quando você tira uma ficha do meio, fica um
+      buraco — então o programa <strong>empurra todas as fichas seguintes uma
+      casa para frente</strong>, para não sobrar espaço vazio. Depois,
+      <code>total--</code> diminui o contador em 1.
+    </p>
+    <div class="analogia">
+      <strong>Analogia:</strong> é como tirar um livro do meio da prateleira e
+      empurrar os outros para o lado, para não ficar aquele vão.
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="bloco">
+    <h2><span class="numero">8</span> O menu — o "cérebro" do programa</h2>
+    <pre><span class="k">int</span> <span class="f">main</span>() {
+    <span class="k">int</span> opcao;
+    <span class="k">do</span> {
+        <span class="f">printf</span>(<span class="s">"\n=== AGENDA DE CONTATOS ===\n"</span>);
+        <span class="f">printf</span>(<span class="s">"1 - Incluir contato\n"</span>);
+        <span class="f">printf</span>(<span class="s">"2 - Listar contatos\n"</span>);
+        <span class="f">printf</span>(<span class="s">"3 - Consultar contato\n"</span>);
+        <span class="f">printf</span>(<span class="s">"4 - Excluir contato\n"</span>);
+        <span class="f">printf</span>(<span class="s">"5 - Sair\n"</span>);
+        <span class="f">printf</span>(<span class="s">"Opcao: "</span>);
+        <span class="f">scanf</span>(<span class="s">"%d"</span>, &amp;opcao);
+
+        <span class="k">switch</span> (opcao) {
+            <span class="k">case</span> 1: <span class="f">incluir</span>(); <span class="k">break</span>;
+            <span class="k">case</span> 2: <span class="f">listar</span>(); <span class="k">break</span>;
+            <span class="k">case</span> 3: <span class="f">consultar</span>(); <span class="k">break</span>;
+            <span class="k">case</span> 4: <span class="f">excluir</span>(); <span class="k">break</span>;
+            <span class="k">case</span> 5: <span class="f">printf</span>(<span class="s">"Saindo...\n"</span>); <span class="k">break</span>;
+            <span class="k">default</span>: <span class="f">printf</span>(<span class="s">"Opcao invalida!\n"</span>);
+        }
+    } <span class="k">while</span> (opcao != 5);
+
+    <span class="k">return</span> 0;
+}</pre>
+    <p>
+      Essa é a parte principal, que junta tudo. Ela <strong>mostra o menu</strong>
+      e pergunta qual opção você quer (de 1 a 5).
+    </p>
+    <ul>
+      <li>O <code>switch</code> é como um <strong>porteiro</strong>: olha o número que você digitou e chama a função certa (incluir, listar, etc.).</li>
+      <li>O <code>do ... while (opcao != 5)</code> faz o menu <strong>aparecer de novo e de novo</strong>, até você escolher a opção <strong>5 (Sair)</strong>.</li>
+      <li>Se você digitar um número que não existe no menu, o <code>default</code> avisa "Opção inválida!".</li>
+    </ul>
+    <div class="analogia">
+      <strong>Analogia:</strong> é o <strong>balcão de atendimento</strong> da
+      agenda. Ele pergunta o que você quer, te encaminha para o lugar certo, e
+      volta a perguntar — até você dizer "tchau" (opção 5).
+    </div>
+  </div>
+
+  <div class="destaque">
+    <h2 style="margin-top:0; color: var(--verde);">✅ Resumindo em uma frase</h2>
+    <p style="margin-bottom:0">
+      O programa guarda contatos numa "estante de gavetas" (o vetor), e um menu
+      fica perguntando o que você quer fazer — anotar, ver a lista, procurar ou
+      apagar — repetindo até você escolher sair. Simples assim! 🎉
+    </p>
+  </div>
+
+</main>
+
+<footer>
+  Trabalho Final — Fundamentos de Programação · Agenda de Contatos em C
+</footer>
+
+</body>
+</html>
