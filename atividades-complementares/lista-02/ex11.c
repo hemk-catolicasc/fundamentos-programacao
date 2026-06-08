@@ -11,8 +11,10 @@ int main () {
 
     printf("Digite um numero: ");
     scanf("%d", &n1);
+    fflush(stdin);
     printf("Digite outro numero: ");
     scanf("%d", &n2);
+    fflush(stdin);
 
 
     printf("---CALCULADORA--- \n");
