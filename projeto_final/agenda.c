@@ -3,14 +3,37 @@
 #include <string.h>
 
 #define MAX 100
+#define ARQUIVO "agenda.txt"
 
-struct Contato {
+typedef struct {
     char nome[50];
     char telefone[20];
-};
+} Contato;
 
-struct Contato agenda[MAX];
+Contato agenda[MAX];
 int total = 0;
+
+void carregar() {
+    FILE *arq = fopen(ARQUIVO, "r");
+    if (arq == NULL) return;
+    while (total < MAX && fscanf(arq, " %[^\n] %[^\n]", agenda[total].nome, agenda[total].telefone) == 2) {
+        total++;
+    }
+    fclose(arq);
+}
+
+void salvar() {
+    int i;
+    FILE *arq = fopen(ARQUIVO, "w");
+    if (arq == NULL) {
+        printf("Erro ao salvar o arquivo.\n");
+        return;
+    }
+    for (i = 0; i < total; i++) {
+        fprintf(arq, "%s\n%s\n", agenda[i].nome, agenda[i].telefone);
+    }
+    fclose(arq);
+}
 
 void incluir() {
     if (total >= MAX) {
@@ -37,13 +60,13 @@ void listar() {
 }
 
 void consultar() {
-    char nome[50];
+    char busca[50];
     int i, achou = 0;
-    printf("Digite o nome: ");
-    scanf(" %[^\n]", nome);
+    printf("Digite o nome (ou parte dele): ");
+    scanf(" %[^\n]", busca);
     for (i = 0; i < total; i++) {
-        if (strcmp(agenda[i].nome, nome) == 0) {
-            printf("Nome: %s\nTelefone: %s\n", agenda[i].nome, agenda[i].telefone);
+        if (strstr(agenda[i].nome, busca) != NULL) {
+            printf("Nome: %s | Telefone: %s\n", agenda[i].nome, agenda[i].telefone);
             achou = 1;
         }
     }
@@ -66,7 +89,6 @@ void excluir() {
         printf("Contato nao encontrado.\n");
         return;
     }
-    /* puxa os contatos seguintes uma posicao para tras */
     for (i = pos; i < total - 1; i++) {
         agenda[i] = agenda[i + 1];
     }
@@ -74,15 +96,38 @@ void excluir() {
     printf("Contato excluido!\n");
 }
 
+void alterar() {
+    char nome[50];
+    int i, pos = -1;
+    printf("Digite o nome do contato a alterar: ");
+    scanf(" %[^\n]", nome);
+    for (i = 0; i < total; i++) {
+        if (strcmp(agenda[i].nome, nome) == 0) {
+            pos = i;
+        }
+    }
+    if (pos == -1) {
+        printf("Contato nao encontrado.\n");
+        return;
+    }
+    printf("Novo nome (%s): ", agenda[pos].nome);
+    scanf(" %[^\n]", agenda[pos].nome);
+    printf("Novo telefone (%s): ", agenda[pos].telefone);
+    scanf(" %[^\n]", agenda[pos].telefone);
+    printf("Contato alterado!\n");
+}
+
 int main() {
     int opcao;
+    carregar();
     do {
         printf("\n=== AGENDA DE CONTATOS ===\n");
         printf("1 - Incluir contato\n");
         printf("2 - Listar contatos\n");
         printf("3 - Consultar contato\n");
         printf("4 - Excluir contato\n");
-        printf("5 - Sair\n");
+        printf("5 - Alterar contato\n");
+        printf("6 - Sair\n");
         printf("Opcao: ");
         scanf("%d", &opcao);
 
@@ -91,10 +136,11 @@ int main() {
             case 2: listar(); break;
             case 3: consultar(); break;
             case 4: excluir(); break;
-            case 5: printf("Saindo...\n"); break;
+            case 5: alterar(); break;
+            case 6: salvar(); printf("Saindo...\n"); break;
             default: printf("Opcao invalida!\n");
         }
-    } while (opcao != 5);
+    } while (opcao != 6);
 
     return 0;
 }
