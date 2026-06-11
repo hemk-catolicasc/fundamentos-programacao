@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #define MAX 100
 #define ARQUIVO "agenda.txt"
 
@@ -9,10 +8,8 @@ typedef struct {
     char nome[50];
     char telefone[20];
 } Contato;
-
 Contato agenda[MAX];
 int total = 0;
-
 void carregar() {
     FILE *arq = fopen(ARQUIVO, "r");
     if (arq == NULL) return;
@@ -33,6 +30,21 @@ void salvar() {
         fprintf(arq, "%s\n%s\n", agenda[i].nome, agenda[i].telefone);
     }
     fclose(arq);
+    printf("Contatos salvos com sucesso!\n");
+}
+
+void ordenar() {
+    int i, j;
+    Contato temp;
+    for (i = 0; i < total - 1; i++) {
+        for (j = 0; j < total - i - 1; j++) {
+            if (strcmp(agenda[j].nome, agenda[j + 1].nome) > 0) {
+                temp = agenda[j];
+                agenda[j] = agenda[j + 1];
+                agenda[j + 1] = temp;
+            }
+        }
+    }
 }
 
 void incluir() {
@@ -45,6 +57,7 @@ void incluir() {
     printf("Telefone: ");
     scanf(" %[^\n]", agenda[total].telefone);
     total++;
+    ordenar();
     printf("Contato incluido!\n");
 }
 
@@ -83,6 +96,7 @@ void excluir() {
     for (i = 0; i < total; i++) {
         if (strcmp(agenda[i].nome, nome) == 0) {
             pos = i;
+            break;
         }
     }
     if (pos == -1) {
@@ -104,6 +118,7 @@ void alterar() {
     for (i = 0; i < total; i++) {
         if (strcmp(agenda[i].nome, nome) == 0) {
             pos = i;
+            break;
         }
     }
     if (pos == -1) {
@@ -114,6 +129,7 @@ void alterar() {
     scanf(" %[^\n]", agenda[pos].nome);
     printf("Novo telefone (%s): ", agenda[pos].telefone);
     scanf(" %[^\n]", agenda[pos].telefone);
+    ordenar();
     printf("Contato alterado!\n");
 }
 
@@ -130,7 +146,6 @@ int main() {
         printf("6 - Sair\n");
         printf("Opcao: ");
         scanf("%d", &opcao);
-
         switch (opcao) {
             case 1: incluir(); break;
             case 2: listar(); break;
@@ -141,6 +156,5 @@ int main() {
             default: printf("Opcao invalida!\n");
         }
     } while (opcao != 6);
-
     return 0;
 }
